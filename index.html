@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>防水シーツ 在庫入力</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; padding: 20px; text-align: center; }
+    input, button { font-size: 1.5em; margin: 10px; padding: 15px; width: 80%; }
+    button { background: #4285f4; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <h2>防水シーツ 在庫入力</h2>
+  <p>今日出した枚数：</p>
+  <input type="number" id="count" placeholder="例: 5" min="0">
+  <br>
+  <button onclick="send()">送信</button>
+
+  <script>
+    function send() {
+      const count = document.getElementById('count').value;
+      if (!count) { alert('枚数を入力してください'); return; }
+
+      // ★ここにApps ScriptのURLを入れる（後で！）
+    const url = 'https://script.google.com/macros/s/AKfycbxxxx/exec';
+
+      fetch(url + '?count=' + count, { method: 'GET' })
+        .then(() => {
+          alert('送信完了！（' + count + '枚）');
+          document.getElementById('count').value = '';
+        })
+        .catch(() => alert('エラー：もう一度試して'));
+    }
+  </script>
+</body>
+</html>
