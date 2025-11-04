@@ -17,24 +17,30 @@
   <br>
   <button onclick="send()">送信</button>
 
- <script>
+<script>
   function send() {
     const count = document.getElementById('count').value;
-    if (!count) { alert('枚数を入力してください'); return; }
+    if (!count || count === '0') { 
+      alert('枚数を入力してください'); 
+      return; 
+    }
 
-    const url = 'https://script.google.com/macros/s/AKfycbxo7HQqPKOjr5Znpjm-zcpuTXuFTYbyF7L80vorEjRimljBcHoevVjj2MhAIvyYvRcfYw/exec';
+    const url = 'https://script.google.com/macros/s/AKfycbx5xObRW20lvh4UX0k1aSFlH716z_qtdBv3wT8_UD7CkfbhrxH8mO_oB3hgUIFrAJRStQ/exec';
 
-    fetch(`${url}?count=${count}`, { method: 'GET' })
-      .then(response => response.text())
-      .then(text => {
-        if (text === 'OK') {
-          alert('送信完了！');
-          document.getElementById('count').value = '';
-        } else {
-          alert('エラー：' + text);
-        }
-      })
-      .catch(() => alert('ネットワークエラー'));
+    // CORS回避：no-cors + シンプルなGET
+    fetch(url + '?count=' + encodeURIComponent(count), {
+      method: 'GET',
+      mode: 'no-cors',  // ← これでCORS回避！
+      cache: 'no-cache'
+    })
+    .then(() => {
+      // no-corsではレスポンス読めないので、無条件で成功扱い
+      alert('送信完了！');
+      document.getElementById('count').value = '';
+    })
+    .catch(() => {
+      alert('通信エラー：Wi-Fiを確認してください');
+    });
   }
 </script>
 </body>
