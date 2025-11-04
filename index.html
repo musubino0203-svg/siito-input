@@ -25,22 +25,30 @@
       return; 
     }
 
-    const url ='https://script.google.com/macros/s/AKfycbymBEAm7SB9imxYn7j-yjYKQDNxAGMpDtY3kNB8zO8BhzDY2d0aZ7I7ratlWNbO1qz81Q/exec';
-    
-    fetch(url + '?count=' + count)
-      .then(response => response.text())
-      .then(text => {
-        if (text.includes('OK')) {
-          alert('送信完了！');
-          document.getElementById('count').value = '';
-        } else {
-          alert('エラー：' + text);
-        }
-      })
-      .catch(err => {
-        console.error(err);
+    const url = 'https://script.google.com/macros/s/AKfycbz8ESBu916aZs7QxLRuJrAWzHk6-S5RvxKJSJyFPZuDO686fSY7zy_T9myWgkLx-I4UYQ/exec';
+
+    // iframe でリダイレクト受信
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = url + '?count=' + count;
+    document.body.appendChild(iframe);
+
+    // 成功メッセージ受信
+    window.addEventListener('message', function(e) {
+      if (e.data === 'SUCCESS') {
+        alert('送信完了！');
+        document.getElementById('count').value = '';
+        document.body.removeChild(iframe);
+      }
+    });
+
+    // タイムアウト（10秒）
+    setTimeout(() => {
+      if (document.body.contains(iframe)) {
         alert('通信エラー：Wi-Fiを確認してください');
-      });
+        document.body.removeChild(iframe);
+      }
+    }, 10000);
   }
 </script>
 </body>
